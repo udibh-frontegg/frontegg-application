@@ -9,8 +9,9 @@ cd frontegg-application
 
 2. Install dependencies:
 npm install
+npm install @frontegg/react react-router-dom
 
-3. Start the App:
+4. Start the App:
 npm start
 
 App will open at http://localhost:3000. 
