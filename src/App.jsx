@@ -1,48 +1,33 @@
-import './App.css';
-// import { useEffect } from 'react';
-import { useAuth, useLoginWithRedirect, ContextHolder } from "@frontegg/react";
+import React, { useEffect } from 'react';
+import { useAuth, AdminPortal } from '@frontegg/react';
 
 function App() {
-const { user, isAuthenticated } = useAuth();
-const loginWithRedirect = useLoginWithRedirect();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth();
 
-useEffect(() => {
-if (!isAuthenticated) {
-loginWithRedirect();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect(); // <-- call directly from useAuth
+    }
+  }, [isAuthenticated, loginWithRedirect]);
+
+  const handleSettingsClick = () => {
+    AdminPortal.show();
+  };
+
+  if (!isAuthenticated) return <div>Loading...</div>;
+
+  return (
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h1>Welcome, {user?.name}</h1>
+      {user?.profilePicture && (
+        <img src={user.profilePicture} alt="Profile" style={{ borderRadius: '50%' }} />
+      )}
+      <br />
+      <button onClick={handleSettingsClick} style={{ marginTop: '20px' }}>
+        Settings
+      </button>
+    </div>
+  );
 }
-}, [isAuthenticated, loginWithRedirect]);
-
-const logout = () => {
-const baseUrl = ContextHolder.getContext().baseUrl;
-window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location.href}`;
-};
-
-return (
-
-<div className="App">
-  {isAuthenticated ? (
-    <div>
-      <div>
-        <img src={user?.profilePictureUrl} alt={user?.name} />
-      </div>
-      <div>
-        <span>Logged in as: {user?.name}</span>
-      </div>
-      <div>
-        <button onClick={() => alert(user.accessToken)}>
-          What is my access token?
-        </button>
-      </div>
-      <div>
-        <button onClick={() => logout()}>Click to logout</button>
-      </div>
-    </div>
-  ) : (
-    <div>
-      <button onClick={() => loginWithRedirect()}>Click me to login</button>
-    </div>
-  )}
-</div>
-); }
 
 export default App;
